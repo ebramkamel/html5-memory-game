@@ -2,16 +2,9 @@ import { useState, useEffect } from 'react';
 import { Card } from './Card';
 import { Timer } from './Timer';
 import { RefreshCw, Info, PartyPopper } from 'lucide-react';
+import { brandingConfig } from '../config/branding';
 
-const CARD_IMAGES = [
-  '/images/card1.png',
-  '/images/card2.png',
-  '/images/card3.png',
-  '/images/card4.png',
-];
-
-const CENTER_IMAGE = '/images/center.png';
-
+// Constants are now sourced from brandingConfig
 interface Card {
   id: number;
   imageIndex: number;
@@ -29,8 +22,9 @@ export function GameBoard() {
   const [shouldResetTimer, setShouldResetTimer] = useState(false);
 
   const initializeGame = () => {
-    const cardPairs = [...CARD_IMAGES, ...CARD_IMAGES].map((_, index) => ({
-      id: index,
+    // Create maxPairs pairs (maxPairs * 2 cards)
+    const cardPairs = [...brandingConfig.cardFaces, ...brandingConfig.cardFaces].map((_, index) => ({
+      id: index, // IDs 0 to (maxPairs * 2 - 1)
       imageIndex: Math.floor(index / 2),
       isFlipped: false,
       isMatched: false,
@@ -38,14 +32,6 @@ export function GameBoard() {
 
     // Shuffle cards
     const shuffledCards = cardPairs.sort(() => Math.random() - 0.5);
-
-    // Insert center card at position 4 (middle)
-    shuffledCards.splice(4, 0, {
-      id: 8,
-      imageIndex: -1, // Special index for center card
-      isFlipped: true,
-      isMatched: true,
-    });
 
     setCards(shuffledCards);
     setMoves(0);
@@ -63,8 +49,7 @@ export function GameBoard() {
     if (
       isProcessing ||
       cards[clickedIndex].isMatched ||
-      cards[clickedIndex].isFlipped ||
-      clickedIndex === 4 // Center card
+      cards[clickedIndex].isFlipped
     ) {
       return;
     }
@@ -88,8 +73,8 @@ export function GameBoard() {
         setFirstCard(null);
         setIsProcessing(false);
 
-        // Check if game is complete
-        if (matchedPairs + 1 === 4) {
+        // Check if game is complete (maxPairs pairs)
+        if (matchedPairs + 1 === brandingConfig.maxPairs) {
           setIsGameComplete(true);
         }
       } else {
@@ -109,7 +94,7 @@ export function GameBoard() {
     <div className="w-[962px] h-[500px] bg-gray-100 p-4 select-none flex">
       <div className="flex-1 flex items-center justify-center">
         <div
-          className="grid grid-cols-3 justify-items-center items-center"
+          className="grid grid-cols-4 justify-items-center items-center" // 4 columns for 4x3 grid
           style={{
             display: 'grid',
             gap: '13px',
@@ -120,14 +105,10 @@ export function GameBoard() {
             <Card
               key={card.id}
               id={card.id}
-              image={
-                card.imageIndex === -1
-                  ? CENTER_IMAGE
-                  : CARD_IMAGES[card.imageIndex]
-              }
+              image={brandingConfig.cardFaces[card.imageIndex]}
               isFlipped={card.isFlipped}
               isMatched={card.isMatched}
-              isCenter={index === 4}
+              isCenter={false}
               onClick={() => handleCardClick(index)}
             />
           ))}
@@ -155,7 +136,7 @@ export function GameBoard() {
           </div>
 
           <div className="bg-white px-3 py-2 rounded-lg shadow">
-            <span className="font-semibold">Pairs:</span> {matchedPairs}/4
+            <span className="font-semibold">Pairs:</span> {matchedPairs}/{brandingConfig.maxPairs}
           </div>
 
           {!isGameComplete ? (
@@ -167,7 +148,7 @@ export function GameBoard() {
               <ul className="text-sm text-gray-600 space-y-1.5">
                 <li>• Click cards to flip them</li>
                 <li>• Find matching pairs</li>
-                <li>• Complete all 4 pairs</li>
+                <li>• Complete all {brandingConfig.maxPairs} pairs</li>
               </ul>
             </div>
           ) : (

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { brandingConfig } from '../config/branding';
 
 interface CardProps {
   id: number;
@@ -27,19 +28,28 @@ export function Card({ id, image, isFlipped, isCenter, isMatched, onClick }: Car
         {/* Front of card (back image) */}
         <div className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden">
           <img
-            src="/images/card-back.png"
+            src={brandingConfig.cardBack}
             alt="Card Back"
             className="w-full h-full object-cover"
           />
         </div>
         
-        {/* Back of card (actual image) */}
+        {/* Back of card (actual image or SVG) */}
         <div className="absolute w-full h-full backface-hidden rotate-y-180 rounded-lg overflow-hidden">
-          <img
-            src={image}
-            alt={`Card ${id}`}
-            className="w-full h-full object-cover"
-          />
+          {image.startsWith('svg:') && brandingConfig.svgCards ? (
+            <div
+              className="w-full h-full"
+              dangerouslySetInnerHTML={{
+                __html: brandingConfig.svgCards[image.substring(4)] || ''
+              }}
+            />
+          ) : (
+            <img
+              src={image}
+              alt={`Card ${id}`}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
       </div>
     </motion.div>

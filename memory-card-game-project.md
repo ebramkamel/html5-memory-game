@@ -8,16 +8,16 @@ The Memory Card Game is an interactive web-based concentration challenge where p
 
 After examining the code and seeing the game in action, the Memory Card Game offers a visually appealing memory challenge with the following features:
 
-- Players test their memory by matching pairs of cards arranged in a 3x3 grid
+- Players test their memory by matching pairs of cards arranged in a 4x3 grid
 - Each card features a unique, modern geometric design on its face, with a shared back design
-- A special center card (displaying "MOVE" logo) remains face-up throughout the game as an anchor point
+- The game consists of 6 pairs of cards (12 cards total)
 - Players click cards to flip them over with smooth 3D animations powered by Framer Motion
 - When a player reveals two cards that match, those cards remain face-up
 - If the revealed cards don't match, they automatically flip face-down after a brief moment (1 second)
 - The game tracks performance metrics in a clean sidebar interface:
   - Number of moves taken
   - Time elapsed (in minutes:seconds format)
-  - Number of pairs matched (displayed as X/4)
+  - Number of pairs matched (displayed as X/6)
 - A blue "Restart" button with a refresh icon allows players to reset the game at any time
 - A "How to Play" section provides simple instructions for new players
 - A congratulatory message in green appears when all pairs are matched
@@ -43,7 +43,9 @@ project/
 │       ├── card2.png
 │       ├── card3.png
 │       ├── card4.png
-│       └── center.png    # Center card image
+│       ├── card5.png
+│       ├── card6.png
+│       └── center.png    # No longer used in the game
 ├── src/
 │   ├── components/       # React components
 │   │   ├── Card.tsx      # Individual card component
@@ -60,7 +62,7 @@ project/
 
 #### GameBoard.tsx
 The core component that manages the game state and logic:
-- Initializes and shuffles cards in a 3x3 grid layout
+- Initializes and shuffles cards in a 4x3 grid layout
 - Handles card flipping and matching logic
 - Tracks game progress (moves, matches, completion)
 - Manages the game UI layout with a main game area and sidebar
@@ -85,7 +87,7 @@ Tracks and displays the elapsed game time:
 ## Code Implementation Details
 
 ### Game Initialization
-The game initializes with 8 cards (4 pairs) plus a center card arranged in a 3x3 grid. The cards are shuffled randomly at the start of each game, with the center card (displaying the "MOVE" logo) always placed in the middle position (index 4).
+The game initializes with 12 cards (6 pairs) arranged in a 4x3 grid. The cards are shuffled randomly at the start of each game.
 
 ### Game State Management
 The game uses React's useState and useEffect hooks to manage various aspects of the game state:
@@ -105,7 +107,7 @@ When a player clicks on a card:
 4. The moves counter increments after each pair selection
 
 ### UI/UX Features
-- Clean 3x3 card grid layout with modern geometric card designs
+- Clean 4x3 card grid layout with modern geometric card designs
 - Right sidebar with game controls and statistics
 - Visual feedback for card interactions (scale effect when tapped)
 - Smooth 3D flip animations for cards
